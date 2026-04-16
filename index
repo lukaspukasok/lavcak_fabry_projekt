@@ -6,7 +6,20 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Hello World</h1>
+<?php
+    $conn = mysqli_connect("localhost", "root","", "todo_app");
+   
+
+
+
+
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    echo "Connected successfully";
     
 </body>
 </html>
+
+
+    
