@@ -1,19 +1,50 @@
 <?php
-require_once("../config/db.php");
+require_once(__DIR__ . "/config.php");
 
-$id = $_GET["id"];
-$result = $conn->query("SELECT * FROM tasks WHERE id = $id");
-$task = $result->fetch_assoc();
+if (!isset($_COOKIE["logged"]) || $_COOKIE["logged"] !== "1") {
+    header("Location: login.php");
+    exit();
+}
+
+$id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
+$message = "";
+
+if ($id <= 0) {
+    header("Location: tasks.php");
+    exit();
+}
+
+$stmt = mysqli_prepare($conn, "SELECT id, title, status FROM tasks WHERE id = ? LIMIT 1");
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$task = $result ? mysqli_fetch_assoc($result) : null;
+mysqli_stmt_close($stmt);
+
+if (!$task) {
+    header("Location: tasks.php");
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = $_POST["title"];
-    $status = $_POST["status"];
+    $title = trim($_POST["title"] ?? "");
+    $status = $_POST["status"] ?? "pending";
 
-    $sql = "UPDATE tasks SET title='$title', status='$status' WHERE id=$id";
-    $conn->query($sql);
+    if ($title === "") {
+        $message = "Zadaj názov úlohy!";
+    } else {
+        if (!in_array($status, ["pending", "done"], true)) {
+            $status = "pending";
+        }
 
-    header("Location: index.php");
-    exit();
+        $stmt = mysqli_prepare($conn, "UPDATE tasks SET title = ?, status = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "ssi", $title, $status, $id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        header("Location: tasks.php");
+        exit();
+    }
 }
 ?>
 
@@ -26,8 +57,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <h1>Upraviť úlohu</h1>
 
+<?php if ($message): ?>
+    <p style="color:red;"><?php echo htmlspecialchars($message); ?></p>
+<?php endif; ?>
+
 <form method="POST">
-    <input type="text" name="title" value="<?php echo $task['title']; ?>">
+    <input type="text" name="title" value="<?php echo htmlspecialchars($task['title']); ?>" required>
     
     <select name="status">
         <option value="pending" <?php if ($task['status']=="pending") echo "selected"; ?>>Pending</option>
@@ -38,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </form>
 
 <br>
-<a href="index.php">Späť</a>
+<a href="tasks.php">Späť</a>
 
 </body>
 </html>
