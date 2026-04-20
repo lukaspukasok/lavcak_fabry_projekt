@@ -29,11 +29,7 @@ $username = $_SESSION['username'] ?? null;
                 Tu sa vieš prihlásiť alebo zaregistrovať. Po prihlásení ťa aplikácia presunie do zoznamu úloh.
               </p>
 
-              <?php if ($username): ?>
-                <div class="alert alert-info mb-4">
-                  Prihlásený používateľ: <strong><?php echo htmlspecialchars($username); ?></strong>
-                </div>
-              <?php endif; ?>
+            
 
               <nav class="d-flex flex-wrap gap-2">
                 <a class="btn btn-primary" href="login.php">Login</a>
