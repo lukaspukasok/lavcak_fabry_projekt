@@ -1,6 +1,22 @@
 <?php
 require_once __DIR__ . "/config.php";
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["toggle_status_id"])) {
+    $taskId = (int) $_POST["toggle_status_id"];
+    $currentStatus = $_POST["current_status"] ?? "pending";
+    $newStatus = $currentStatus === "done" ? "pending" : "done";
+
+    if ($taskId > 0) {
+        $stmt = mysqli_prepare($conn, "UPDATE tasks SET status = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "si", $newStatus, $taskId);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    header("Location: tasks.php");
+    exit();
+}
+
 $tasks = [];
 $result = mysqli_query($conn, "SELECT id, title, status FROM tasks ORDER BY id DESC");
 if ($result) {
@@ -50,6 +66,13 @@ if ($result) {
                                     </div>
 
                                     <div class="d-flex gap-2">
+                                        <form method="post" class="d-inline">
+                                            <input type="hidden" name="toggle_status_id" value="<?php echo (int) $task["id"]; ?>">
+                                            <input type="hidden" name="current_status" value="<?php echo htmlspecialchars($task["status"]); ?>">
+                                            <button type="submit" class="btn btn-sm <?php echo $task["status"] === "done" ? "btn-outline-warning" : "btn-success"; ?>">
+                                                <?php echo $task["status"] === "done" ? "Undone" : "Done"; ?>
+                                            </button>
+                                        </form>
                                         <a href="edit.php?id=<?php echo (int) $task["id"]; ?>" class="btn btn-sm btn-outline-primary">Edit</a>
                                         <a href="delete.php?id=<?php echo (int) $task["id"]; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Naozaj chceš úlohu vymazať?');">Delete</a>
                                     </div>
