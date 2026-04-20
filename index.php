@@ -14,7 +14,6 @@ session_start();
     <h1>Todo App</h1>
 
     <nav>
-        <a href="index.php">Domov</a> |
         <a href="login.php">Login</a> |
         <a href="register.php">Register</a> |
         <a href="add.php">Úlohy</a>
