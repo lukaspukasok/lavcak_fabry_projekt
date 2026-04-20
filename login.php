@@ -82,7 +82,7 @@ $is_logged = isset($_COOKIE["logged"]);
 <button type="submit" name="login" class="btn btn-primary w-100">Prihlásiť sa</button>
 
 <div class="text-center mt-2">
-<a href="forgot_password.php">Zabudol si heslo?</a>
+<a href="reset_password.php">Zabudol si heslo?</a>
 </div>
 
 <div class="text-center mt-3">

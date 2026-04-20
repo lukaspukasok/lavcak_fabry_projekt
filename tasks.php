@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . "/config.php";
 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["logout"])) {
+    setcookie("logged", "", time() - 3600, "/");
+    header("Location: index.php");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["toggle_status_id"])) {
     $taskId = (int) $_POST["toggle_status_id"];
     $currentStatus = $_POST["current_status"] ?? "pending";
@@ -47,6 +53,9 @@ if ($result) {
                 <div class="d-flex gap-2">
                     <a href="add.php" class="btn btn-primary">+ Pridať úlohu</a>
                     <a href="index.php" class="btn btn-outline-secondary">Späť</a>
+                    <form method="post" class="d-inline">
+                        <button type="submit" name="logout" class="btn btn-outline-danger">Odhlásiť sa</button>
+                    </form>
                 </div>
             </div>
 
