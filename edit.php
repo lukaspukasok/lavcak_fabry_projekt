@@ -14,7 +14,7 @@ if ($id <= 0) {
     exit();
 }
 
-$stmt = mysqli_prepare($conn, "SELECT id, title, status FROM tasks WHERE id = ? LIMIT 1");
+$stmt = mysqli_prepare($conn, "SELECT id, title FROM tasks WHERE id = ? LIMIT 1");
 mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -28,17 +28,20 @@ if (!$task) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = trim($_POST["title"] ?? "");
-    $status = $_POST["status"] ?? "pending";
 
     if ($title === "") {
         $message = "Zadaj názov úlohy!";
     } else {
-        if (!in_array($status, ["pending", "done"], true)) {
-            $status = "pending";
-        }
+        $stmt = mysqli_prepare($conn, "UPDATE tasks SET title = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "si", $title, $id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
 
-        $stmt = mysqli_prepare($conn, "UPDATE tasks SET title = ?, status = ? WHERE id = ?");
-        mysqli_stmt_bind_param($stmt, "ssi", $title, $status, $id);
+        header("Location: tasks.php");
+        exit();
+
+        $stmt = mysqli_prepare($conn, "UPDATE tasks SET title = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "ssi", $title, $id);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
@@ -63,8 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <form method="POST">
     <input type="text" name="title" value="<?php echo htmlspecialchars($task['title']); ?>" required>
-    
-
     <button type="submit">Uložiť</button>
 </form>
 
