@@ -20,7 +20,11 @@ $result = $conn->query($sql);
 
 while ($row = $result->fetch_assoc()) {
     echo "<p>";
-    echo $row["title"] . " (" . $row["status"] . ")";
+    echo $row["title"] . " (" . $row["status"] . ") ";
+
+    echo "<a href='edit.php?id=".$row["id"]."'>Edit</a> ";
+    echo "<a href='delete.php?id=".$row["id"]."'>Delete</a>";
+
     echo "</p>";
 }
 ?>
