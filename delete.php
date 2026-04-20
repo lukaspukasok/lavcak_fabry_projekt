@@ -1,9 +1,14 @@
 <?php
-require_once("../config/db.php");
+require_once(__DIR__ . "/config.php");
 
-$id = $_GET["id"];
+$id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 
-$conn->query("DELETE FROM tasks WHERE id = $id");
+if ($id > 0) {
+	$stmt = mysqli_prepare($conn, "DELETE FROM tasks WHERE id = ?");
+	mysqli_stmt_bind_param($stmt, "i", $id);
+	mysqli_stmt_execute($stmt);
+	mysqli_stmt_close($stmt);
+}
 
-header("Location: index.php");
+header("Location: tasks.php");
 exit();
