@@ -2,13 +2,16 @@
 require_once(__DIR__ . "/config.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = $_POST["title"];
+    $title = trim($_POST["title"] ?? "");
 
     if (!empty($title)) {
-        $sql = "INSERT INTO tasks (title) VALUES ('$title')";
-        $conn->query($sql);
+        $status = "pending";
+        $stmt = mysqli_prepare($conn, "INSERT INTO tasks (title, status) VALUES (?, ?)");
+        mysqli_stmt_bind_param($stmt, "ss", $title, $status);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
 
-        header("Location: index.php");
+        header("Location: tasks.php");
         exit();
     } else {
         echo "Zadaj názov úlohy!";
@@ -31,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </form>
 
 <br>
-<a href="index.php">Späť</a>
+<a href="tasks.php">Späť</a>
 
 </body>
 </html>
