@@ -64,10 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <form method="POST">
     <input type="text" name="title" value="<?php echo htmlspecialchars($task['title']); ?>" required>
     
-    <select name="status">
-        <option value="pending" <?php if ($task['status']=="pending") echo "selected"; ?>>Pending</option>
-        <option value="done" <?php if ($task['status']=="done") echo "selected"; ?>>Done</option>
-    </select>
 
     <button type="submit">Uložiť</button>
 </form>
