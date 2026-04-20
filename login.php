@@ -1,32 +1,38 @@
 <?php
+session_start();
+require_once __DIR__ . '/config.php';
 
 $message = "";
 
 if (isset($_POST["login"])) {
+    $userForm = trim($_POST["username"] ?? "");
+    $passForm = $_POST["password"] ?? "";
 
-    $userForm = mysqli_real_escape_string($con, $_POST["username"]);
-    $passForm = mysqli_real_escape_string($con, $_POST["password"]);
+    $stmt = mysqli_prepare($conn, "SELECT id, username, password FROM users WHERE username = ? LIMIT 1");
+    mysqli_stmt_bind_param($stmt, "s", $userForm);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = $result ? mysqli_fetch_assoc($result) : null;
+    mysqli_stmt_close($stmt);
 
-    $sql = "SELECT * FROM user WHERE meno='$userForm' LIMIT 1";
-    $result = mysqli_query($con, $sql);
-
-if (mysqli_num_rows($result) == 1) {
-    $row = mysqli_fetch_assoc($result);
-
-    if (password_verify($passForm, $row["heslo"])) {
-        setcookie("logged", "1", time() + 3600, "/");
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
+    if ($row) {
+        if (password_verify($passForm, $row["password"])) {
+            setcookie("logged", "1", time() + 3600, "/");
+            $_SESSION["username"] = $row["username"];
+            $_SESSION["user_id"] = (int) $row["id"];
+            header("Location: tasks.php");
+            exit;
+        } else {
+            $message = "Nesprávne heslo!";
+        }
     } else {
-        $message = "Nesprávne heslo!";
+        $message = "Používateľ neexistuje!";
     }
-} else {
-    $message = "Používateľ neexistuje!";
-}
 }
 
 if (isset($_POST["logout"])) {
     setcookie("logged", "", time() - 3600, "/");
+    unset($_SESSION["username"], $_SESSION["user_id"]);
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
