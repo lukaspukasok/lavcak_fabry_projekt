@@ -52,7 +52,6 @@ if ($result) {
                 </div>
                 <div class="d-flex gap-2">
                     <a href="add.php" class="btn btn-primary">+ Pridať úlohu</a>
-                    <a href="index.php" class="btn btn-outline-secondary">Späť</a>
                     <form method="post" class="d-inline">
                         <button type="submit" name="logout" class="btn btn-outline-danger">Odhlásiť sa</button>
                     </form>
