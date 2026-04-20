@@ -9,22 +9,21 @@
 
 <body class="bg-light">
   <?php
-  $conn = mysqli_connect("localhost", "root", "root", "aut");
-
-  if(!$conn){
-    echo "Chyba pripojenia" . mysqli_connect_error();
-  }
+  require_once __DIR__ . '/config.php';
 
   if(isset($_POST["register"])){
-  $username = $_POST["username"];
-  $password = ($_POST["password"]);
+  $username = mysqli_real_escape_string($conn, $_POST["username"]);
+  $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-  $sql = "INSERT INTO user (meno, heslo) VALUES ('$username', '$password')";
+  $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
 
   if(mysqli_query($conn, $sql)){
       setcookie("logged", "1", time() + 3600, "/");
-      header("Location: 17auth.php");
+      header("Location: index.php");
       exit;
+  }
+  else {
+      echo "Chyba pri registrácii: " . mysqli_error($conn);
   }
 }
 ?>
@@ -54,7 +53,7 @@
     <hr class="my-3">
 
     <div class="text-center">
-      <a href="17auth.php">Už máte účet? Prihláste sa</a>
+      <a href="login.php">Už máte účet? Prihláste sa</a>
     </div>
 
   </div>
