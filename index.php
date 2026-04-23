@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_COOKIE['logged']) && $_COOKIE['logged'] === '1') {
+if (isset($_COOKIE['logged']) && $_COOKIE['logged'] === '1' && isset($_SESSION['logged']) && $_SESSION['logged'] === '1') {
     header('Location: tasks.php');
     exit;
 }

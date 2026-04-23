@@ -1,8 +1,19 @@
 <?php
 require_once __DIR__ . "/config.php";
+session_start();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["logout"])) {
+    $projectPath = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
+
+    // Clear cookie for both root and project subdirectory paths.
     setcookie("logged", "", time() - 3600, "/");
+    if ($projectPath !== '') {
+        setcookie("logged", "", time() - 3600, $projectPath . "/");
+    }
+
+    unset($_SESSION["username"], $_SESSION["user_id"]);
+    session_destroy();
+
     header("Location: index.php");
     exit();
 }
