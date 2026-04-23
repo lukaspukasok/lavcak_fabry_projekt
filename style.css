@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap");
+
+:root {
+	--bg-start: #f8fbff;
+	--bg-end: #ecf4ff;
+	--surface: #ffffff;
+	--surface-alt: #f5f8fc;
+	--text-main: #0f172a;
+	--text-muted: #5b667a;
+	--brand: #0b5ed7;
+	--brand-strong: #094bb0;
+	--radius-lg: 18px;
+}
+
+body {
+	font-family: "Space Grotesk", "Segoe UI", sans-serif;
+	color: var(--text-main);
+	background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+	background-attachment: fixed;
+}
+
+.container {
+	position: relative;
+}
+
+.card {
+	border: 1px solid rgba(11, 94, 215, 0.12);
+	border-radius: var(--radius-lg);
+	background: var(--surface);
+	box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+.card-body {
+	border-radius: var(--radius-lg);
+}
+
+h1,
+h2,
+h3,
+.display-6 {
+	letter-spacing: -0.02em;
+	font-weight: 700;
+}
+
+.text-muted {
+	color: var(--text-muted) !important;
+}
+
+.btn {
+	border-radius: 12px;
+	font-weight: 600;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 10px 18px rgba(11, 94, 215, 0.2);
+}
+
+.btn-primary {
+	background-color: var(--brand);
+	border-color: var(--brand);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+	background-color: var(--brand-strong);
+	border-color: var(--brand-strong);
+}
+
+.form-control {
+	border-radius: 12px;
+	border: 1px solid #d3dded;
+	background: #fbfdff;
+}
+
+.form-control:focus {
+	border-color: #8fb5ff;
+	box-shadow: 0 0 0 0.2rem rgba(11, 94, 215, 0.15);
+}
+
+.list-group-item {
+	border: 1px solid #e5edf7;
+	border-radius: 12px !important;
+	background: var(--surface-alt);
+	margin-bottom: 10px;
+}
+
+.list-group-item:last-child {
+	margin-bottom: 0;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+	.card {
+		border-radius: 14px;
+	}
+
+	.container {
+		padding-left: 16px;
+		padding-right: 16px;
+	}
+}
