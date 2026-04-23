@@ -236,6 +236,40 @@ h1,
 	border-color: rgba(44, 124, 245, 0.34);
 }
 
+.tasks-header {
+	gap: 1rem;
+}
+
+.tasks-header-actions {
+	flex-wrap: wrap;
+}
+
+.task-item-actions {
+	align-items: center;
+}
+
+@media (min-width: 768px) {
+	.tasks-header {
+		display: grid !important;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center !important;
+	}
+
+	.tasks-header > div:first-child {
+		min-width: 0;
+	}
+
+	.tasks-header-actions {
+		flex-wrap: nowrap;
+		white-space: nowrap;
+	}
+
+	.tasks-header-actions .btn,
+	.tasks-header-actions form {
+		flex: 0 0 auto;
+	}
+}
+
 .text-decoration-line-through {
 	text-decoration-thickness: 2px;
 	text-decoration-color: #8ea3c0;
@@ -303,14 +337,43 @@ a:hover {
 	}
 }
 
+@media (min-width: 768px) and (max-width: 1199px) {
+	.tasks-header {
+		align-items: flex-start !important;
+	}
+
+	.tasks-header-actions {
+		justify-content: flex-end;
+	}
+
+	.task-item {
+		gap: 0.8rem !important;
+	}
+
+	.task-item-actions {
+		justify-content: flex-end;
+		flex-wrap: wrap;
+	}
+}
+
 @media (max-width: 767px) {
 	.container {
 		padding-left: 16px;
 		padding-right: 16px;
 	}
 
+	body::before,
+	body::after {
+		opacity: 0.45;
+		filter: blur(20px);
+	}
+
 	.card {
 		box-shadow: 0 12px 30px rgba(11, 19, 36, 0.12);
+	}
+
+	h3 {
+		font-size: 1.2rem;
 	}
 
 	.btn {
@@ -318,9 +381,76 @@ a:hover {
 		padding-bottom: 0.62rem;
 	}
 
+	.tasks-header {
+		flex-direction: column;
+		align-items: stretch !important;
+		gap: 0.9rem;
+	}
+
+	.tasks-header-actions {
+		width: 100%;
+	}
+
+	.tasks-header-actions .btn,
+	.tasks-header-actions form {
+		flex: 1 1 0;
+	}
+
+	.tasks-header-actions form .btn {
+		width: 100%;
+	}
+
+	.list-group-item {
+		padding: 0.85rem 0.9rem;
+	}
+
+	.task-item-actions {
+		width: 100%;
+		display: grid !important;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.task-item-actions .btn,
+	.task-item-actions form {
+		width: 100%;
+	}
+
+	.task-item-actions form .btn {
+		width: 100%;
+	}
+
 	.vh-100 {
 		min-height: 100dvh !important;
 		height: auto !important;
+	}
+}
+
+@media (max-width: 480px) {
+	body {
+		line-height: 1.42;
+	}
+
+	h1,
+	.display-5,
+	.display-6 {
+		font-size: clamp(1.4rem, 7.5vw, 1.85rem);
+	}
+
+	.card {
+		border-radius: 16px;
+	}
+
+	.card-body {
+		padding: 1rem !important;
+	}
+
+	.task-item-actions {
+		grid-template-columns: 1fr;
+	}
+
+	.text-center a {
+		display: inline-block;
+		padding: 0.15rem 0.2rem;
 	}
 }
 

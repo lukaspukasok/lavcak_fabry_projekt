@@ -57,12 +57,12 @@ if ($result) {
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-9">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 tasks-header">
                 <div>
                     <h1 class="mb-1">Zoznam úloh</h1>
                     <p class="text-muted mb-0">Úlohy, pridanie, edit a delete sú rozdelené do samostatných súborov.</p>
                 </div>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 tasks-header-actions">
                     <a href="add.php" class="btn btn-primary">+ Pridať úlohu</a>
                     <form method="post" class="d-inline">
                         <button type="submit" name="logout" class="btn btn-outline-danger">Odhlásiť sa</button>
@@ -77,7 +77,7 @@ if ($result) {
                     <?php else: ?>
                         <div class="list-group">
                             <?php foreach ($tasks as $task): ?>
-                                <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 task-item">
                                     <div>
                                         <div class="fw-semibold <?php echo $task["status"] === "done" ? "text-decoration-line-through text-muted" : ""; ?>">
                                             <?php echo htmlspecialchars($task["title"]); ?>
@@ -85,7 +85,7 @@ if ($result) {
                                         <small class="text-muted">Stav: <?php echo htmlspecialchars($task["status"]); ?></small>
                                     </div>
 
-                                    <div class="d-flex gap-2">
+                                    <div class="d-flex gap-2 task-item-actions">
                                         <form method="post" class="d-inline">
                                             <input type="hidden" name="toggle_status_id" value="<?php echo (int) $task["id"]; ?>">
                                             <input type="hidden" name="current_status" value="<?php echo htmlspecialchars($task["status"]); ?>">
