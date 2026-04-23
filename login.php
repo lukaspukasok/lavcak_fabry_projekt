@@ -53,7 +53,7 @@ $is_logged = isset($_COOKIE["logged"]);
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
 <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
-<h3 class="text-center mb-3">Prihlásenie (DB)</h3>
+<h3 class="text-center mb-3">Prihlásenie</h3>
 
 <?php if ($is_logged): ?>
 
