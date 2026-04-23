@@ -1,83 +1,80 @@
 <?php
-require_once __DIR__ . "/config.php";
+include "config.php";
 
 $message = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["resetPassword"])) {
-  $username = trim($_POST["username"] ?? "");
-  $newPassword = $_POST["new_password"] ?? "";
+if (isset($_POST["reset"])) {
 
-  if ($username !== "" && $newPassword !== "") {
+    $username = mysqli_real_escape_string($conn, $_POST["username"]);
+    $newPassword = $_POST["new_password"];
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-    $stmt = mysqli_prepare($conn, "UPDATE users SET password = ? WHERE username = ?");
-    mysqli_stmt_bind_param($stmt, "ss", $hashedPassword, $username);
-    mysqli_stmt_execute($stmt);
+    $check = mysqli_query($conn, "SELECT * FROM users WHERE username='$username' LIMIT 1");
 
-    if (mysqli_stmt_affected_rows($stmt) > 0) {
-      $message = "Heslo bolo úspešne zmenené.";
+    if (mysqli_num_rows($check) == 1) {               
+
+        $sql = "UPDATE users SET password='$hashedPassword' WHERE username='$username'";
+
+        if (mysqli_query($conn, $sql)) {
+            $message = "Heslo bolo úspešne zmenené ✅";
+        } else {
+            $message = "Chyba pri zmene hesla ❌";
+        }
+
     } else {
-      $message = "Používateľ sa nenašiel.";
+        $message = "Používateľ neexistuje ❌";
     }
-
-    mysqli_stmt_close($stmt);
-  } else {
-    $message = "Vyplň používateľské meno aj nové heslo.";
-  }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="sk">
-  <head>
-    <meta charset="UTF-8">
-    <title>Prihlásenie stránka - Cookies úloha</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<head>
+<meta charset="UTF-8">
+<title>Obnovenie hesla</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
-
-
 
 <body class="bg-light">
 
+<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="card shadow p-4" style="max-width: 400px; width: 100%;">
 
-  <div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+<h3 class="text-center mb-3">Zabudnuté heslo</h3>
 
-      <h3 class="text-center mb-3">Resetovať heslo používateľa</h3>
-      <p class="text-muted text-center">Použitie cookies</p>
+<?php if ($message): ?>
+<div class="alert alert-info text-center"><?php echo $message; ?></div>
+<?php endif; ?>
 
-      <?php if ($message): ?>
-        <div class="alert alert-info text-center"><?php echo htmlspecialchars($message); ?></div>
-      <?php endif; ?>
+<form method="post">
 
-      <form method="post">
-        <div class="mb-3">
-          <label class="form-label">Používateľské meno</label>
-          <input type="text" class="form-control" name="username" required>
-        </div>
+<div class="mb-3">
+<label class="form-label">Používateľské meno</label>
+<input type="text" name="username" class="form-control" required>
+</div>
 
-        <div class="mb-3">
-          <label class="form-label">Nové heslo</label>
-          <input type="password" class="form-control" name="new_password" required>
-        </div>
+<div class="mb-3">
+<label class="form-label">Nové heslo</label>
+<input type="password" name="new_password" class="form-control" required>
+</div>
 
-        <button type="submit" name="resetPassword" class="btn btn-primary w-100">
-          Resetovať heslo
-        </button>
-      </form>
+<button type="submit" name="reset" class="btn btn-primary w-100">
+Zmeniť heslo
+</button>
 
-      <hr class="my-3">
+</form>
 
-      <div class="text-center">
-        <a href="register.php">registrovať sa</a>
-        <a href="login.php">Prihlásiť sa</a>
-      </div>
+<hr class="my-3">
 
-    </div>
-  </div>
+<div class="text-center">
+<form action="login.php" method="get">
+<button type="submit" class="btn btn-link p-0">Späť na prihlásenie</button>
+</form>
+</div>
+
+</div>
+</div>
 
 </body>
-
 </html>

@@ -1,3 +1,25 @@
+<?php
+session_start();
+require_once __DIR__ . '/config.php';
+
+if (isset($_POST["register"])) {
+  $username = mysqli_real_escape_string($conn, $_POST["username"]);
+  $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
+  $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+
+  if (mysqli_query($conn, $sql)) {
+      setcookie("logged", "1", time() + 3600, "/");
+      $_SESSION["logged"] = "1";
+      $_SESSION["username"] = $username;
+      header("Location: /lavcak_fabry_projekt/tasks.php");
+      exit;
+  } else {
+      echo "Chyba pri registrácii: " . mysqli_error($conn);
+  }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="sk">
 
@@ -9,25 +31,6 @@
 </head>
 
 <body class="bg-light">
-  <?php
-  require_once __DIR__ . '/config.php';
-
-  if(isset($_POST["register"])){
-  $username = mysqli_real_escape_string($conn, $_POST["username"]);
-  $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-
-  $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
-
-  if(mysqli_query($conn, $sql)){
-      setcookie("logged", "1", time() + 3600, "/");
-      header("Location: index.php");
-      exit;
-  }
-  else {
-      echo "Chyba pri registrácii: " . mysqli_error($conn);
-  }
-}
-?>
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
   <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
