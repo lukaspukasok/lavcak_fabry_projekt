@@ -1,7 +1,16 @@
 <?php
 require_once(__DIR__ . "/config.php");
+session_start();
 
-if (!isset($_COOKIE["logged"]) || $_COOKIE["logged"] !== "1") {
+// Check if user is logged in
+if (!isset($_SESSION["logged"]) || $_SESSION["logged"] !== "1") {
+    header("Location: login.php");
+    exit();
+}
+
+$userId = $_SESSION["user_id"] ?? null;
+
+if (!$userId) {
     header("Location: login.php");
     exit();
 }
@@ -14,8 +23,8 @@ if ($id <= 0) {
     exit();
 }
 
-$stmt = mysqli_prepare($conn, "SELECT id, title FROM tasks WHERE id = ? LIMIT 1");
-mysqli_stmt_bind_param($stmt, "i", $id);
+$stmt = mysqli_prepare($conn, "SELECT id, title FROM tasks WHERE id = ? AND user_id = ? LIMIT 1");
+mysqli_stmt_bind_param($stmt, "ii", $id, $userId);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $task = $result ? mysqli_fetch_assoc($result) : null;
@@ -32,12 +41,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($title === "") {
         $message = "Zadaj názov úlohy!";
     } else {
-        $stmt = mysqli_prepare($conn, "UPDATE tasks SET title = ? WHERE id = ?");
-        mysqli_stmt_bind_param($stmt, "si", $title, $id);
+        $stmt = mysqli_prepare($conn, "UPDATE tasks SET title = ? WHERE id = ? AND user_id = ?");
+        mysqli_stmt_bind_param($stmt, "sii", $title, $id, $userId);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-        header("Location: tasks.php");
+        header("Location: /lavcak_fabry_projekt/tasks.php");
         exit();
     }
 }

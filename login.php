@@ -6,24 +6,29 @@ $message = "";
 
 // LOGIN
 if (isset($_POST["login"])) {
-  $username = $_POST["username"];
-  $password = $_POST["password"]; 
+  $username = mysqli_real_escape_string($conn, trim($_POST["username"] ?? ""));
+  $password = $_POST["password"] ?? "";
 
-  $sql = "SELECT * FROM users WHERE username = '$username'";
+  $sql = "SELECT * FROM users WHERE username = '$username' ORDER BY id ASC";
   $result = mysqli_query($conn, $sql);
 
-  $hash_password = mysqli_fetch_assoc($result);
+  $authenticatedUser = null;
+  if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+      if (password_verify($password, $row['password'])) {
+        $authenticatedUser = $row;
+        break;
+      }
+    }
+  }
 
-  if(mysqli_num_rows($result) == 1){
-    if(password_verify($password,  $hash_password['password'])){
+  if ($authenticatedUser) {
       setcookie("logged", "1", time() + 3600, "/");
       $_SESSION["logged"] = "1";
-      $_SESSION["username"] = $hash_password["username"];
-      header("Location: " . "tasks.php");
+      $_SESSION["username"] = $authenticatedUser["username"];
+      $_SESSION["user_id"] = $authenticatedUser["id"];
+      header("Location: " . "/lavcak_fabry_projekt/tasks.php");
       exit();
-    } else {
-      $message = "Nesprávne používateľské meno alebo heslo.";
-    }
   } else {
     $message = "Nesprávne používateľské meno alebo heslo.";
   }
@@ -34,7 +39,7 @@ if (isset($_POST["logout"])) {
   setcookie("logged", "", time() - 3600, "/");
   unset($_SESSION["logged"], $_SESSION["username"], $_SESSION["user_id"]);
   session_destroy();
-  header("Location: " . "index.php");
+  header("Location: " . "/lavcak_fabry_projekt/index.php");
   exit();
 }
 

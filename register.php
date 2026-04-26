@@ -1,21 +1,44 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 require_once __DIR__ . '/config.php';
 
+$message = "";
+
 if (isset($_POST["register"])) {
-  $username = mysqli_real_escape_string($conn, $_POST["username"]);
-  $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+  $username = trim($_POST["username"] ?? "");
+  $plainPassword = $_POST["password"] ?? "";
 
-  $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
-
-  if (mysqli_query($conn, $sql)) {
-      setcookie("logged", "1", time() + 3600, "/");
-      $_SESSION["logged"] = "1";
-      $_SESSION["username"] = $username;
-      header("Location: /lavcak_fabry_projekt/tasks.php");
-      exit;
+  if ($username === "" || $plainPassword === "") {
+    $message = "Vyplň používateľské meno aj heslo.";
   } else {
-      echo "Chyba pri registrácii: " . mysqli_error($conn);
+    $username = mysqli_real_escape_string($conn, $username);
+    $password = password_hash($plainPassword, PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+
+    try {
+      if (mysqli_query($conn, $sql)) {
+        $userId = mysqli_insert_id($conn);
+
+        setcookie("logged", "1", time() + 3600, "/");
+        $_SESSION["logged"] = "1";
+        $_SESSION["username"] = $username;
+        $_SESSION["user_id"] = $userId;
+        header("Location: /lavcak_fabry_projekt/tasks.php");
+        exit;
+      } else {
+        $message = "Chyba pri registrácii: " . mysqli_error($conn);
+      }
+    } catch (mysqli_sql_exception $e) {
+      if ((int)$e->getCode() === 1062) {
+        $message = "Používateľské meno už existuje. Zvoľ iné.";
+      } else {
+        $message = "Chyba pri registrácii: " . $e->getMessage();
+      }
+    }
   }
 }
 ?>
@@ -37,6 +60,10 @@ if (isset($_POST["register"])) {
   <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
     
     <h3 class="text-center mb-3">Registrácia používateľa</h3>
+
+      <?php if ($message): ?>
+        <div class="alert alert-warning py-2" role="alert"><?php echo htmlspecialchars($message); ?></div>
+      <?php endif; ?>
       
       <!-- REGISTER FORM -->
       <form method="post">

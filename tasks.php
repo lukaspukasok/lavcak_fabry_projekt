@@ -2,6 +2,19 @@
 require_once __DIR__ . "/config.php";
 session_start();
 
+// Check if user is logged in
+if (!isset($_SESSION["logged"]) || $_SESSION["logged"] !== "1") {
+    header("Location: login.php");
+    exit();
+}
+
+$userId = $_SESSION["user_id"] ?? null;
+
+if (!$userId) {
+    header("Location: login.php");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["logout"])) {
     $projectPath = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
 
@@ -14,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["logout"])) {
     unset($_SESSION["username"], $_SESSION["user_id"]);
     session_destroy();
 
-    header("Location: index.php");
+    header("Location: /lavcak_fabry_projekt/index.php");
     exit();
 }
 
@@ -24,8 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["toggle_status_id"])) 
     $newStatus = $currentStatus === "done" ? "pending" : "done";
 
     if ($taskId > 0) {
-        $stmt = mysqli_prepare($conn, "UPDATE tasks SET status = ? WHERE id = ?");
-        mysqli_stmt_bind_param($stmt, "si", $newStatus, $taskId);
+        $stmt = mysqli_prepare($conn, "UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?");
+        mysqli_stmt_bind_param($stmt, "sii", $newStatus, $taskId, $userId);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
@@ -35,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["toggle_status_id"])) 
 }
 
 $tasks = [];
-$result = mysqli_query($conn, "SELECT id, title, status FROM tasks ORDER BY id DESC");
+$result = mysqli_query($conn, "SELECT id, title, status FROM tasks WHERE user_id = $userId ORDER BY id DESC");
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         $tasks[] = $row;

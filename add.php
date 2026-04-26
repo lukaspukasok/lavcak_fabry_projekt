@@ -1,5 +1,17 @@
 <?php
+session_start();
 require_once(__DIR__ . "/config.php");
+
+if (!isset($_SESSION["logged"]) || $_SESSION["logged"] !== "1") {
+    header("Location: /lavcak_fabry_projekt/login.php");
+    exit();
+}
+
+$userId = $_SESSION["user_id"] ?? null;
+if (!$userId) {
+    header("Location: /lavcak_fabry_projekt/login.php");
+    exit();
+}
 
 $message = "";
 
@@ -8,12 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($title)) {
         $status = "pending";
-        $stmt = mysqli_prepare($conn, "INSERT INTO tasks (title, status) VALUES (?, ?)");
-        mysqli_stmt_bind_param($stmt, "ss", $title, $status);
+        $stmt = mysqli_prepare($conn, "INSERT INTO tasks (user_id, title, status) VALUES (?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "iss", $userId, $title, $status);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-        header("Location: tasks.php");
+        header("Location: /lavcak_fabry_projekt/tasks.php");
         exit();
     } else {
         $message = "Zadaj názov úlohy!";
