@@ -17,11 +17,4 @@ if (!$conn) {
     );
 }
 
-$usersTable = mysqli_query($conn, "SHOW TABLES LIKE 'users'");
-$tasksTable = mysqli_query($conn, "SHOW TABLES LIKE 'tasks'");
-
-if (!$usersTable || !$tasksTable || mysqli_num_rows($usersTable) === 0 || mysqli_num_rows($tasksTable) === 0) {
-    die("Schema chyba. Manualne importuj database.sql do databazy '$dbName' a obnov stranku.");
-}
-
 ?>
