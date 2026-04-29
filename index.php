@@ -6,7 +6,6 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] === '1' && isset($_SESSION['
     exit;
 }
 
-$username = $_SESSION['username'] ?? null;
 ?>
 <!doctype html>
 <html lang="sk">
