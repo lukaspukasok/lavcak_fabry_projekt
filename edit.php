@@ -2,7 +2,6 @@
 require_once(__DIR__ . "/config.php");
 session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION["logged"]) || $_SESSION["logged"] !== "1") {
     header("Location: login.php");
     exit();

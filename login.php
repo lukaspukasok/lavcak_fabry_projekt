@@ -4,7 +4,7 @@ include "config.php";
 
 $message = "";
 
-// LOGIN
+
 if (isset($_POST["login"])) {
   $username = mysqli_real_escape_string($conn, trim($_POST["username"] ?? ""));
   $password = $_POST["password"] ?? "";
@@ -34,7 +34,6 @@ if (isset($_POST["login"])) {
   }
 }
 
-// LOGOUT
 if (isset($_POST["logout"])) {
   setcookie("logged", "", time() - 3600, "/");
   unset($_SESSION["logged"], $_SESSION["username"], $_SESSION["user_id"]);
