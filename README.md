@@ -74,7 +74,6 @@ Tabulka tasks:
 
 - Hesla su hashovane cez password_hash.
 - Pri task operaciach je filtrovanie cez user_id, aby pouzivatel nevidel alebo nemenil cudzie tasky.
-- Register a login stale pouzivaju SQL string query pri casti logiky; pri dalsom refaktore je vhodne zjednotit vsetko na prepared statements.
 
 ## Zname obmedzenia
 
