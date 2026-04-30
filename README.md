@@ -80,10 +80,3 @@ Tabulka tasks:
 - Reset hesla v [reset_password.php](reset_password.php) overuje iba username (bez email tokenu).
 - Chybove hlasky su orientovane na lokalny development (display_errors je zapnute).
 
-## Rychly test po nasadeni
-
-1. Otvor [register.php](register.php) a vytvor novy ucet.
-2. Over, ze redirect ide na [tasks.php](tasks.php).
-3. Pridaj task cez [add.php](add.php), uprav ho cez [edit.php](edit.php), zmaz cez [delete.php](delete.php).
-4. Odhlas sa a prihlas znova cez [login.php](login.php).
-5. Over, ze po prihlaseni vidis iba vlastne tasky.
