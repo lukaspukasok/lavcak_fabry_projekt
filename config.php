@@ -6,7 +6,7 @@ $conn = mysqli_connect("localhost","root","root","todo_app", 3306);
 
 if (!$conn) {
     die(
-        "Nepodarilo sa pripojit k databaze '$dbName'. " .
+        "Nepodarilo sa pripojit k databaze 'todo_app'. " .
         "Najprv manualne vytvor databazu a importuj database.sql. " .
         "Detail: " . mysqli_connect_error()
     );
